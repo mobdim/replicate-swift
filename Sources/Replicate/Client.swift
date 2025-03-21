@@ -97,6 +97,7 @@ public class Client {
         input: Input,
         webhook: Webhook? = nil,
         _ type: Output.Type = Value.self,
+        onStarting: ((String) -> Void)? = nil,
         updateHandler: @escaping (Prediction<Input, Output>) throws -> Void = { _ in () }
     ) async throws -> Output? {
         var prediction: Prediction<Input, Output>
@@ -111,6 +112,8 @@ public class Client {
                                                     input: input,
                                                     webhook: webhook)
         }
+        
+        onStarting?(prediction.id)
 
         try await prediction.wait(with: self, updateHandler: updateHandler)
 
